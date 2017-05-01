@@ -7,25 +7,28 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.meutkarsh.hiddenword.Game">
+    tools:context="com.meutkarsh.hiddenword.Game"
+    android:background="@drawable/az">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Player 1"
+        android:text="KARAN"
         android:id="@+id/tv_player1"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Player 2"
+        android:text="ARJUN"
         android:id="@+id/tv_player2"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,7 +54,9 @@
         android:text="RESTART"
         android:id="@+id/button_restart"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/tv_turn"
+        android:textStyle="bold|italic" />
 
     <Button
         android:layout_width="wrap_content"
@@ -59,7 +64,10 @@
         android:text="CHALLENGE"
         android:id="@+id/button_challenge"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:longClickable="false"
+        android:textStyle="bold|italic" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -69,14 +77,16 @@
         android:id="@+id/tv_word"
         android:layout_below="@+id/tv_player1"
         android:layout_centerHorizontal="true"
-        android:textSize="30dp" />
+        android:textSize="30dp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:layout_below="@+id/tv_word"
+        android:layout_above="@+id/tv_turn">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -454,5 +464,6 @@
         android:id="@+id/tv_turn"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignTop="@+id/button_challenge" />
+        android:layout_alignTop="@+id/button_challenge"
+        android:textStyle="bold" />
 </RelativeLayout>

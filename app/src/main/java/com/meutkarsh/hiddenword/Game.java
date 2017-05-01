@@ -2,6 +2,7 @@ package com.meutkarsh.hiddenword;
 
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +22,7 @@ public class Game extends AppCompatActivity {
     Button b_restart, b_challenge;
     TrieNode root;
     int scoreP1, scoreP2, MIN_WORD_LENGTH = 3;
-    int n = 7, m = 7, turn, grid[][], x, y, endScore = 30;
+    int n = 7, m = 7, turn, grid[][], x, y, endScore = 300, plus = 10, minus = 5;
     Button b[][] = new Button[n][m];
     char vowels[] = new char[]{'a', 'e', 'i', 'o', 'u'};
 
@@ -44,6 +45,8 @@ public class Game extends AppCompatActivity {
         grid = new int[n][m];
         tvword.setText("");
         tvturn.setText(tvp1.getText());
+        b_restart.setBackgroundColor(Color.TRANSPARENT);
+        b_challenge.setBackgroundColor(Color.TRANSPARENT);
 
         AssetManager assetManager = getAssets();
         try{
@@ -127,7 +130,7 @@ public class Game extends AppCompatActivity {
                     u = (char) ((Math.random() * 26) + 'a');
                 }
                 b[i][j].setText("" + u);
-                b[i][j].setBackgroundColor(Color.GREEN);
+                b[i][j].setBackgroundColor(Color.TRANSPARENT);
             }
         }
 
@@ -143,7 +146,7 @@ public class Game extends AppCompatActivity {
                             u = (char) ((Math.random() * 26) + 'a');
                         }
                         b[i][j].setText("" + u);
-                        b[i][j].setBackgroundColor(Color.GREEN);
+                        b[i][j].setBackgroundColor(Color.TRANSPARENT);
                         b[i][j].setEnabled(true);
                         grid[i][j] = 0;
                     }
@@ -156,7 +159,8 @@ public class Game extends AppCompatActivity {
                 tvword.setText("");
                 tvturn.setText(tvp1.getText());
                 b_challenge.setText("CHALLENGE");
-                b_challenge.setBackgroundColor(Color.LTGRAY);
+                b_challenge.setBackgroundColor(Color.TRANSPARENT);
+                b_challenge.setEnabled(true);
                 turn = 0;
                 //b_restart.setBackgroundColor(Color.RED);
             }
@@ -168,7 +172,7 @@ public class Game extends AppCompatActivity {
 
                 if(b_challenge.getText().toString().compareTo("NEW WORD") == 0){
                     b_challenge.setText("CHALLENGE");
-                    b_challenge.setBackgroundColor(Color.LTGRAY);
+                    b_challenge.setBackgroundColor(Color.TRANSPARENT);
                     nextTurn();
                 } else {
                     String word = (String) tvword.getText();
@@ -177,10 +181,10 @@ public class Game extends AppCompatActivity {
                     }
                     if (canContinue()) {
                         if (turn % 2 == 1) {
-                            scoreP2 -= word.length();
+                            scoreP2 -= word.length() * minus;
                             tvs2.setText("" + scoreP2);
                         } else {
-                            scoreP1 -= word.length();
+                            scoreP1 -= word.length() * minus;
                             tvs1.setText("" + scoreP1);
                         }
                         if (!checkEnd())
@@ -188,10 +192,10 @@ public class Game extends AppCompatActivity {
                     } else {
                         Toast.makeText(Game.this, "Good job ...", Toast.LENGTH_SHORT).show();
                         if (turn % 2 == 1) {
-                            scoreP2 += word.length();
+                            scoreP2 += word.length() * plus;
                             tvs2.setText("" + scoreP2);
                         } else {
-                            scoreP1 += word.length();
+                            scoreP1 += word.length() * plus;
                             tvs1.setText("" + scoreP1);
                         }
                         if (!checkEnd())
@@ -212,7 +216,7 @@ public class Game extends AppCompatActivity {
                             for (int jj = 0; jj < m; jj++) {
                                 if (grid[ii][jj] == 0 && isNeighbour(finalI, finalJ, ii, jj)) {
                                     b[ii][jj].setEnabled(true);
-                                    b[ii][jj].setBackgroundColor(Color.GREEN);
+                                    b[ii][jj].setBackgroundColor(Color.TRANSPARENT);
                                 } else if(grid[ii][jj] == 0){
                                     b[ii][jj].setEnabled(false);
                                     b[ii][jj].setBackgroundColor(Color.LTGRAY);
@@ -222,10 +226,10 @@ public class Game extends AppCompatActivity {
                             }
                         }
                         b_challenge.setText("CHALLENGE");
-                        b_challenge.setBackgroundColor(Color.LTGRAY);
+                        b_challenge.setBackgroundColor(Color.TRANSPARENT);
                         x = finalI;
                         y = finalJ;
-                        b[finalI][finalJ].setBackgroundColor(Color.rgb(185, 78, 239));
+                        b[finalI][finalJ].setBackgroundColor(Color.rgb(240, 160, 50));
                         b[finalI][finalJ].setEnabled(false);
                         grid[finalI][finalJ] = 1;
                         turn++;
@@ -233,10 +237,10 @@ public class Game extends AppCompatActivity {
                         Log.d("Utkarsh", "" + word.length());
                         if(root.isWord(word)){
                             if(turn % 2 == 0){
-                                scoreP2 += word.length();
+                                scoreP2 += word.length() * plus;
                                 tvs2.setText("" + scoreP2);
                             }else{
-                                scoreP1 += word.length();
+                                scoreP1 += word.length() * plus;
                                 tvs1.setText("" + scoreP1);
                             }
                             Toast.makeText(Game.this, "Correct word :- " + word, Toast.LENGTH_SHORT).show();
@@ -244,17 +248,17 @@ public class Game extends AppCompatActivity {
                                 if(checkContinue()) {
                                     tvword.setText(word);
                                     b_challenge.setText("NEW WORD");
-                                    b_challenge.setBackgroundColor(Color.GREEN);
+                                    b_challenge.setBackgroundColor(Color.rgb(250, 200, 50));
                                 } else {
                                     nextTurn();
                                 }
                             }
                         }else if(!root.isPrefix(word)){
                             if(turn % 2 == 0){
-                                scoreP2 -= word.length();
+                                scoreP2 -= word.length() * minus;
                                 tvs2.setText("" + scoreP2);
                             }else{
-                                scoreP1 -= word.length();
+                                scoreP1 -= word.length() * minus;
                                 tvs1.setText("" + scoreP1);
                             }
                             Toast.makeText(Game.this, "Invald prefix !", Toast.LENGTH_SHORT).show();
@@ -285,6 +289,14 @@ public class Game extends AppCompatActivity {
             disha = tvp1.getText() + " lost !";
         }else if(scoreP2 <= -endScore){
             disha = tvp2.getText() + " lost !";
+        }else if(turn >= 200){
+            if(scoreP1 == scoreP2){
+                disha = "Its a DRAW.";
+            }else if(scoreP1 > scoreP2){
+                disha = tvp1.getText() + " wins !";
+            }else{
+                disha = tvp2.getText() + " wins !";
+            }
         }else{
             return false;
         }
@@ -295,6 +307,7 @@ public class Game extends AppCompatActivity {
                 b[i][j].setBackgroundColor(Color.LTGRAY);
             }
         }
+        b_challenge.setEnabled(false);
         return true;
     }
 
@@ -310,7 +323,7 @@ public class Game extends AppCompatActivity {
                 }
                 x = y = 0;
                 b[i][j].setText("" + u);
-                b[i][j].setBackgroundColor(Color.GREEN);
+                b[i][j].setBackgroundColor(Color.TRANSPARENT);
                 b[i][j].setEnabled(true);
                 grid[i][j] = 0;
             }
@@ -347,7 +360,7 @@ public class Game extends AppCompatActivity {
             for(k = 1; k < z; k++){
                 utk += " , " + can[k];
             }
-            Toast.makeText(Game.this, "You can use :- " + utk, Toast.LENGTH_SHORT).show();
+            Toast.makeText(Game.this, "You can use :- " + utk, Toast.LENGTH_LONG).show();
             return true;
         }
     }

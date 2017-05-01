@@ -2,11 +2,11 @@ Basic: - It is a two player game to test the vocabulary of the players.
 
 How to start: - The game begins when a player selects a character from the grid and it continues with alternate turn of the players. Each player is only allowed to select one of the 8 neighboring characters of the last chosen one. One round continues till a complete VALID WORD if formed or the word which is formed is NOT a prefix of any valid word.
 
-Scoring: - If a complete valid word is formed then the length of the word is added to the score of the player who completed that word. But if an invalid prefix is formed then the length of that prefix is deducted from the score of the player who formed that prefix.
+Scoring: - If a complete valid word is formed (of minimum length 3) then the length of the word (x10) is added to the score of the player who completed that word. But if an invalid prefix is formed then the length of that prefix (x5) is deducted from the score of the player who formed that prefix.
 
-End:- Game ends when one of the player reaches score = 30 (to win) or -30 (to lose).
+End:- Game ends when one of the player reaches score = 300 (to win) or -300 (to lose), and if 100 character for each player are over player with high score wins the game.
 
-Challenge Button:- In middle of the game at any point of time if you fell that word cannot be completed than you can use challenge button. If no surrounding character forms a valid prefix then you get plus point ( + length of current word ) else a valid character is displayed and your score reduces ( - length of current word).
+Challenge Button:- In middle of the game at any point of time if you fell that word cannot be completed than you can use challenge button. If no surrounding character forms a valid prefix then you get plus point ( + length of current word x 10 ) else a valid character is displayed and your score reduces ( - length of current word x 5).
 
 New Word Button:- If a player completes a word his score increases, if another word can be formed in its continuation then "NEW WORD" button gets highlighted and other player gets to choose whether to continue with that word or switch to new word.
 
