@@ -11,23 +11,23 @@
     android:background="@drawable/az">
 
     <TextView
+        android:id="@+id/tv_player1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="KARAN"
-        android:id="@+id/tv_player1"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Player 1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tv_player2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="ARJUN"
-        android:id="@+id/tv_player2"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:text="Player 2"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
 
     <TextView

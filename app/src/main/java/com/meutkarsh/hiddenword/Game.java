@@ -1,13 +1,17 @@
 package com.meutkarsh.hiddenword;
 
+import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,12 +43,34 @@ public class Game extends AppCompatActivity {
         tvturn = (TextView) findViewById(R.id.tv_turn);
         b_restart = (Button) findViewById(R.id.button_restart);
         b_challenge = (Button) findViewById(R.id.button_challenge);
+
+        LayoutInflater li = LayoutInflater.from(this);
+        View input_data_view = li.inflate(R.layout.start_game, null);
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setView(input_data_view);
+        final EditText p1_name = (EditText) input_data_view.findViewById(R.id.p1_name);
+        final EditText p2_name = (EditText) input_data_view.findViewById(R.id.p2_name);
+        final EditText score = (EditText) input_data_view.findViewById(R.id.max_score);
+        adb.setCancelable(false);
+        adb.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String p1 = p1_name.getText().toString();
+                if( !p1.isEmpty() ) tvp1.setText(p1);
+                String p2 = p2_name.getText().toString();
+                if( !p2.isEmpty() ) tvp2.setText(p2);
+                String mm = score.getText().toString().trim();
+                if(mm.length() > 0) endScore = Integer.parseInt(mm);
+                tvturn.setText(tvp1.getText());
+            }
+        });
+        adb.show();
+
         scoreP1 = scoreP2 = 0;
         turn = 0;
         x = y = 0;
         grid = new int[n][m];
         tvword.setText("");
-        tvturn.setText(tvp1.getText());
         b_restart.setBackgroundColor(Color.TRANSPARENT);
         b_challenge.setBackgroundColor(Color.TRANSPARENT);
 
