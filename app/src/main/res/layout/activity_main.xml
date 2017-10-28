@@ -11,43 +11,44 @@
     android:background="@drawable/aa">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="START"
         android:id="@+id/button_start"
-        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@android:color/transparent"
-        android:textStyle="bold"
-        android:textSize="45dp"
-        android:textColor="#e6fa3296" />
+        android:layout_marginTop="40dp"
+        android:background="@color/colorPrimary"
+        android:maxLines="1"
+        android:text="@string/start"
+        android:textColor="#e6fa3296"
+        android:textSize="30sp"
+        android:textStyle="bold|italic" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="INSTRUCTIONS"
         android:id="@+id/button_instructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/button_start"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
-        android:background="@android:color/transparent"
+        android:background="@color/colorPrimary"
+        android:maxLines="1"
+        android:text="@string/instructions"
         android:textColor="#fafa3296"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        android:singleLine="true" />
+        android:textSize="30sp"
+        android:textStyle="bold|italic" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="EXIT"
         android:id="@+id/button_exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:textStyle="bold"
-        android:textSize="40dp"
+        android:background="@color/colorPrimary"
+        android:maxLines="1"
+        android:text="@string/exit"
         android:textColor="#f0fa3296"
-        android:singleLine="true"
-        android:background="@android:color/transparent" />
+        android:textSize="30sp"
+        android:textStyle="bold|italic" />
 </RelativeLayout>

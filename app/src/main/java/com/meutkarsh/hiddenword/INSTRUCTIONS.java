@@ -21,14 +21,14 @@ public class INSTRUCTIONS extends AppCompatActivity {
         setContentView(R.layout.activity_instructions);
 
         tv = (TextView) findViewById(R.id.textView);
-        String s="";
+        String s = "";
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("aaa.txt");
             BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while((line = in.readLine()) != null) {
-                s+=line+"\n";
+                s += line + "\n";
             }
             tv.setText(s);
         } catch (IOException e) {
