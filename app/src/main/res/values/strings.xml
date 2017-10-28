@@ -3,4 +3,6 @@
     <string name="start">Let\'s Play</string>
     <string name="instructions">Instructions</string>
     <string name="exit">Exit</string>
+    <string name="restart">Restart</string>
+    <string name="challenge">Challenge</string>
 </resources>

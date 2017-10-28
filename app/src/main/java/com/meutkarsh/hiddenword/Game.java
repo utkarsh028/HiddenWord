@@ -1,5 +1,6 @@
 package com.meutkarsh.hiddenword;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.graphics.Color;
@@ -160,35 +161,51 @@ public class Game extends AppCompatActivity {
             }
         }
 
+        final Context t = this;
         b_restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                char u;
-                for(int i = 0; i < n; i++){
-                    for(int j = 0; j < m; j++){
-                        if(i == j || (i+j) == (n-1)){
-                            u = vowels[(int) (Math.random() * 5)];
-                        } else {
-                            u = (char) ((Math.random() * 26) + 'a');
+                LayoutInflater li = LayoutInflater.from(t);
+                View dialog_view = li.inflate(R.layout.restart, null);
+                AlertDialog.Builder ad = new AlertDialog.Builder(t);
+                ad.setView(dialog_view);
+                ad.setCancelable(false);
+                ad.setMessage("Are you sure you want to restart ?");
+                final EditText score = (EditText) dialog_view.findViewById(R.id.max_score);
+                ad.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int id) {
+                        String mm = score.getText().toString().trim();
+                        if(mm.length() > 0) endScore = Integer.parseInt(mm);
+                        char u;
+                        for(int i = 0; i < n; i++){
+                            for(int j = 0; j < m; j++){
+                                if(i == j || (i+j) == (n-1)){
+                                    u = vowels[(int) (Math.random() * 5)];
+                                } else {
+                                    u = (char) ((Math.random() * 26) + 'a');
+                                }
+                                b[i][j].setText("" + u);
+                                b[i][j].setBackgroundColor(Color.TRANSPARENT);
+                                b[i][j].setEnabled(true);
+                                grid[i][j] = 0;
+                            }
                         }
-                        b[i][j].setText("" + u);
-                        b[i][j].setBackgroundColor(Color.TRANSPARENT);
-                        b[i][j].setEnabled(true);
-                        grid[i][j] = 0;
+                        x = y = 0;
+                        Toast.makeText(Game.this, "Game Restarted ...", Toast.LENGTH_SHORT).show();
+                        scoreP1 = scoreP2 = 0;
+                        tvs1.setText("0");
+                        tvs2.setText("0");
+                        tvword.setText("");
+                        tvturn.setText(tvp1.getText());
+                        b_challenge.setText("CHALLENGE");
+                        b_challenge.setBackgroundColor(Color.TRANSPARENT);
+                        b_challenge.setEnabled(true);
+                        turn = 0;
                     }
-                }
-                x = y = 0;
-                Toast.makeText(Game.this, "Game Restarted ...", Toast.LENGTH_SHORT).show();
-                scoreP1 = scoreP2 = 0;
-                tvs1.setText("0");
-                tvs2.setText("0");
-                tvword.setText("");
-                tvturn.setText(tvp1.getText());
-                b_challenge.setText("CHALLENGE");
-                b_challenge.setBackgroundColor(Color.TRANSPARENT);
-                b_challenge.setEnabled(true);
-                turn = 0;
-                //b_restart.setBackgroundColor(Color.RED);
+                });
+                ad.setNegativeButton("Cancel", null);
+                ad.show();
             }
         });
 
@@ -306,27 +323,27 @@ public class Game extends AppCompatActivity {
     }
 
     boolean checkEnd(){
-        String disha = "";
+        String dp = "";
         if(scoreP2 >= endScore){
-            disha = tvp2.getText() + " wins !";
+            dp = tvp2.getText() + " wins !";
         }else if(scoreP1 >= endScore){
-            disha = tvp1.getText() + " wins !";
+            dp = tvp1.getText() + " wins !";
         }else if(scoreP1 <= -endScore){
-            disha = tvp1.getText() + " lost !";
+            dp = tvp1.getText() + " lost !";
         }else if(scoreP2 <= -endScore){
-            disha = tvp2.getText() + " lost !";
+            dp = tvp2.getText() + " lost !";
         }else if(turn >= 200){
             if(scoreP1 == scoreP2){
-                disha = "Its a DRAW.";
+                dp = "Its a DRAW.";
             }else if(scoreP1 > scoreP2){
-                disha = tvp1.getText() + " wins !";
+                dp = tvp1.getText() + " wins !";
             }else{
-                disha = tvp2.getText() + " wins !";
+                dp = tvp2.getText() + " wins !";
             }
         }else{
             return false;
         }
-        tvword.setText(disha);
+        tvword.setText(dp);
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
                 b[i][j].setEnabled(false);
