@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,11 +33,16 @@ public class Game extends AppCompatActivity {
     int n = 7, m = 7, turn, grid[][], x, y, endScore = 300, plus = 10, minus = 5;
     Button b[][] = new Button[n][m];
     char vowels[] = new char[]{'a', 'e', 'i', 'o', 'u'};
+    public MediaPlayer mp;
+    Context THIS = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        mp = MediaPlayer.create(this, R.raw.abc);
+        mp.start();
 
         tvp1 = (TextView) findViewById(R.id.tv_player1);
         tvp2 = (TextView) findViewById(R.id.tv_player2);
@@ -63,6 +71,19 @@ public class Game extends AppCompatActivity {
                 String mm = score.getText().toString().trim();
                 if(mm.length() > 0) endScore = Integer.parseInt(mm);
                 tvturn.setText(tvp1.getText());
+
+                String message = "It is not important to complete the word just find the correct letter which will lead you to victory.";
+                AlertDialog.Builder tip = new AlertDialog.Builder(THIS);
+                tip.setTitle("Important Tip:");
+                tip.setMessage(message);
+                tip.setCancelable(false);
+                tip.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Empty
+                    }
+                });
+                tip.show();
             }
         });
         adb.show();
@@ -161,13 +182,12 @@ public class Game extends AppCompatActivity {
             }
         }
 
-        final Context t = this;
         b_restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater li = LayoutInflater.from(t);
+                LayoutInflater li = LayoutInflater.from(THIS);
                 View dialog_view = li.inflate(R.layout.restart, null);
-                AlertDialog.Builder ad = new AlertDialog.Builder(t);
+                AlertDialog.Builder ad = new AlertDialog.Builder(THIS);
                 ad.setView(dialog_view);
                 ad.setCancelable(false);
                 ad.setMessage("Are you sure you want to restart ?");
@@ -230,8 +250,10 @@ public class Game extends AppCompatActivity {
                             scoreP1 -= word.length() * minus;
                             tvs1.setText("" + scoreP1);
                         }
-                        if (!checkEnd())
-                            nextTurn();
+                        if (!checkEnd()){
+                            b_challenge.setText("NEXT");
+                            b_challenge.setBackgroundColor(Color.rgb(250, 200, 50));
+                        }
                     } else {
                         Toast.makeText(Game.this, "Good job ...", Toast.LENGTH_SHORT).show();
                         if (turn % 2 == 1) {
@@ -375,37 +397,18 @@ public class Game extends AppCompatActivity {
 
     boolean canContinue(){
         String word = (String) tvword.getText();
-        char can[] = new char[8];
-        int k, z = 0;
-        char ch;
-        if(word.length() == 0){
-            return true;
-        }
+        if(word.length() == 0)  return true;
+        boolean can = false;
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
+                b[i][j].setEnabled(false);
                 if(grid[i][j] == 0 && isNeighbour(x, y, i, j) && root.isPrefix(word + b[i][j].getText())){
-                    ch = b[i][j].getText().charAt(0);
-                    for(k = 0; k < z; k++){
-                        if(can[k] == ch){
-                            break;
-                        }
-                    }
-                    if(k == z){
-                        can[z++] = ch;
-                    }
+                    can = true;
+                    b[i][j].setBackgroundColor(Color.rgb(100, 200, 10));
                 }
             }
         }
-        if(z == 0) {
-            return false;
-        }else{
-            String utk = "" + can[0];
-            for(k = 1; k < z; k++){
-                utk += " , " + can[k];
-            }
-            Toast.makeText(Game.this, "You can use :- " + utk, Toast.LENGTH_LONG).show();
-            return true;
-        }
+        return can;
     }
 
     boolean checkContinue(){
@@ -434,6 +437,46 @@ public class Game extends AppCompatActivity {
 
     boolean inRange(int x, int y){
         return (x >= 0 && x < n && y >= 0 && y < m);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater mi = getMenuInflater();
+        mi.inflate(R.menu.top_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.audio){
+            if(mp.isPlaying()){
+                mp.pause();
+                item.setIcon(R.drawable.ic_volume_off_white_24dp);
+            }else{
+                mp.start();
+                item.setIcon(R.drawable.ic_volume_up_white_24dp);
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mp.pause();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        mp.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mp.stop();
+        mp.release();
     }
 
 }

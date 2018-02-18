@@ -5,4 +5,5 @@
     <string name="exit">Exit</string>
     <string name="restart">Restart</string>
     <string name="challenge">Challenge</string>
+    <string name="menu_sound">Sound</string>
 </resources>
