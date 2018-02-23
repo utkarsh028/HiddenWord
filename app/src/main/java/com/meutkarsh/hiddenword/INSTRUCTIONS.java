@@ -1,5 +1,6 @@
 package com.meutkarsh.hiddenword;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class INSTRUCTIONS extends AppCompatActivity {
+public class INSTRUCTIONS extends Activity {
 
     TextView tv;
 

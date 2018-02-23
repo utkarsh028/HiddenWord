@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:background="@drawable/az1">
 
     <EditText
         android:id="@+id/p1_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Player 1 name">
+        android:hint="Enter Player 1 name"
+        android:maxLength="10"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded">
 
         <requestFocus/>
     </EditText>
@@ -18,12 +22,21 @@
         android:id="@+id/p2_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter player 2 name" />
+        android:layout_marginTop="10dp"
+        android:maxLength="10"
+        android:layout_marginLeft="5dp"
+        android:hint="Enter player 2 name"
+        android:background="@drawable/rounded"/>
     <EditText
         android:id="@+id/max_score"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
         android:inputType="number"
-        android:hint="Enter winning score : Default 300" />
+
+        android:maxLength="3"
+        android:hint="Enter winning score : Default 300"
+        android:background="@drawable/rounded"/>
 
 </LinearLayout>

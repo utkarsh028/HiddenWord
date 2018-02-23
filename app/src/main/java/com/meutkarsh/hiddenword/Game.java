@@ -1,5 +1,6 @@
 package com.meutkarsh.hiddenword;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
@@ -8,7 +9,9 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,37 +61,65 @@ public class Game extends AppCompatActivity {
         View input_data_view = li.inflate(R.layout.start_game, null);
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setView(input_data_view);
+       /* LayoutInflater inflater=this.getLayoutInflater();
+        adb.setView(inflater.inflate(R.layout.start_game,null));*/
         final EditText p1_name = (EditText) input_data_view.findViewById(R.id.p1_name);
         final EditText p2_name = (EditText) input_data_view.findViewById(R.id.p2_name);
         final EditText score = (EditText) input_data_view.findViewById(R.id.max_score);
+
+        adb.setPositiveButton("Start",null);
+        AlertDialog alert=adb.create();
+
+        Button positivebtn = alert.getButton(AlertDialog.BUTTON_POSITIVE);
         adb.setCancelable(false);
-        adb.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+        adb.setPositiveButton("Start",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String p1 = p1_name.getText().toString();
-                if( !p1.isEmpty() ) tvp1.setText(p1);
+                if (!p1.isEmpty()) tvp1.setText(p1);
                 String p2 = p2_name.getText().toString();
-                if( !p2.isEmpty() ) tvp2.setText(p2);
+                if (!p2.isEmpty()) tvp2.setText(p2);
                 String mm = score.getText().toString().trim();
-                if(mm.length() > 0) endScore = Integer.parseInt(mm);
+                if (mm.length() > 0) endScore = Integer.parseInt(mm);
                 tvturn.setText(tvp1.getText());
+              /*  AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
+                View mView = getLayoutInflater().inflate(R.layout.custom_dialog, null);
+                mBuilder.setTitle("Important Tip:");
+                Button mok = (Button) mView.findViewById(R.id.ok);*/
 
                 String message = "It is not important to complete the word just find the correct letter which will lead you to victory.";
-                AlertDialog.Builder tip = new AlertDialog.Builder(THIS);
+                AlertDialog.Builder tip = new AlertDialog.Builder(new ContextThemeWrapper(Game.this,R.style.AlertDialogCustom));
                 tip.setTitle("Important Tip:");
                 tip.setMessage(message);
                 tip.setCancelable(false);
-                tip.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                tip.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Empty
                     }
                 });
-                tip.show();
+                AlertDialog al=tip.create();
+                al.setCanceledOnTouchOutside(false);
+                al.show();
             }
         });
-        adb.show();
+        AlertDialog ale =adb.create();
+        ale.setCanceledOnTouchOutside(false);
+        ale.show();
+        //adb.show();
+             /*   mok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
+                    }
+                });
+                mBuilder.setView(mView);
+                AlertDialog dialog = mBuilder.create();
+                dialog.show();
+            }
+            });
+        adb.show();*/
         scoreP1 = scoreP2 = 0;
         turn = 0;
         x = y = 0;
