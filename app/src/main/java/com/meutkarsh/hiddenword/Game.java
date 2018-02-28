@@ -1,15 +1,14 @@
 package com.meutkarsh.hiddenword;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputFilter;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,20 +55,21 @@ public class Game extends AppCompatActivity {
         b_restart = (Button) findViewById(R.id.button_restart);
         b_challenge = (Button) findViewById(R.id.button_challenge);
 
+        // Dictionary Loading using Async Task
+        new LoadDictionary().execute();
+
         LayoutInflater li = LayoutInflater.from(this);
         View input_data_view = li.inflate(R.layout.start_game, null);
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setView(input_data_view);
-       /* LayoutInflater inflater=this.getLayoutInflater();
-        adb.setView(inflater.inflate(R.layout.start_game,null));*/
+
         final EditText p1_name = (EditText) input_data_view.findViewById(R.id.p1_name);
         final EditText p2_name = (EditText) input_data_view.findViewById(R.id.p2_name);
         final EditText score = (EditText) input_data_view.findViewById(R.id.max_score);
 
         adb.setPositiveButton("Start",null);
-        AlertDialog alert=adb.create();
+        AlertDialog alert = adb.create();
 
-        Button positivebtn = alert.getButton(AlertDialog.BUTTON_POSITIVE);
         adb.setCancelable(false);
         adb.setPositiveButton("Start",new DialogInterface.OnClickListener() {
             @Override
@@ -82,13 +81,11 @@ public class Game extends AppCompatActivity {
                 String mm = score.getText().toString().trim();
                 if (mm.length() > 0) endScore = Integer.parseInt(mm);
                 tvturn.setText(tvp1.getText());
-              /*  AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
-                View mView = getLayoutInflater().inflate(R.layout.custom_dialog, null);
-                mBuilder.setTitle("Important Tip:");
-                Button mok = (Button) mView.findViewById(R.id.ok);*/
 
-                String message = "It is not important to complete the word just find the correct letter which will lead you to victory.";
-                AlertDialog.Builder tip = new AlertDialog.Builder(new ContextThemeWrapper(Game.this,R.style.AlertDialogCustom));
+                String message = "It is not important to complete the word, " +
+                        "just find the correct letter which will lead you to victory.";
+                AlertDialog.Builder tip = new AlertDialog.Builder (
+                        new ContextThemeWrapper (Game.this, R.style.AlertDialogCustom));
                 tip.setTitle("Important Tip:");
                 tip.setMessage(message);
                 tip.setCancelable(false);
@@ -107,19 +104,7 @@ public class Game extends AppCompatActivity {
         AlertDialog ale =adb.create();
         ale.setCanceledOnTouchOutside(false);
         ale.show();
-        //adb.show();
-             /*   mok.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
 
-                    }
-                });
-                mBuilder.setView(mView);
-                AlertDialog dialog = mBuilder.create();
-                dialog.show();
-            }
-            });
-        adb.show();*/
         scoreP1 = scoreP2 = 0;
         turn = 0;
         x = y = 0;
@@ -127,21 +112,6 @@ public class Game extends AppCompatActivity {
         tvword.setText("");
         b_restart.setBackgroundColor(Color.TRANSPARENT);
         b_challenge.setBackgroundColor(Color.TRANSPARENT);
-
-        AssetManager assetManager = getAssets();
-        try{
-            InputStream inputStream = assetManager.open("words.txt");
-            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-            root = new TrieNode();
-            String line = null;
-            while((line = in.readLine()) != null) {
-                String word = line.trim();
-                if (word.length() >= MIN_WORD_LENGTH)
-                    root.add(word);
-            }
-        }catch (IOException e){
-            Toast.makeText(this, "Could not load Dictionary", Toast.LENGTH_LONG).show();
-        }
 
         {       //initializing button array
             b[0][0] = (Button) findViewById(R.id.a1);
@@ -265,7 +235,7 @@ public class Game extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(b_challenge.getText().toString().compareTo("NEW WORD") == 0){
+                if(b_challenge.getText().toString().compareTo("NEXT") == 0){
                     b_challenge.setText("CHALLENGE");
                     b_challenge.setBackgroundColor(Color.TRANSPARENT);
                     nextTurn();
@@ -344,7 +314,7 @@ public class Game extends AppCompatActivity {
                             if(!checkEnd()) {
                                 if(checkContinue()) {
                                     tvword.setText(word);
-                                    b_challenge.setText("NEW WORD");
+                                    b_challenge.setText("NEXT");
                                     b_challenge.setBackgroundColor(Color.rgb(250, 200, 50));
                                 } else {
                                     nextTurn();
@@ -509,6 +479,28 @@ public class Game extends AppCompatActivity {
         super.onDestroy();
         mp.stop();
         mp.release();
+    }
+
+    private class LoadDictionary extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            AssetManager assetManager = getAssets();
+            try{
+                InputStream inputStream = assetManager.open("words.txt");
+                BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+                root = new TrieNode();
+                String line = null;
+                while((line = in.readLine()) != null) {
+                    String word = line.trim();
+                    if (word.length() >= MIN_WORD_LENGTH)
+                        root.add(word);
+                }
+            }catch (IOException e){
+                Toast.makeText(THIS, "Could not load Dictionary", Toast.LENGTH_LONG).show();
+            }
+            return null;
+        }
     }
 
 }

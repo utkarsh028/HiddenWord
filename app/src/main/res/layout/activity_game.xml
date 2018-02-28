@@ -192,6 +192,7 @@
                 android:layout_weight="1"
                 android:id="@+id/b7" />
         </LinearLayout>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -244,6 +245,7 @@
                 android:layout_weight="1"
                 android:id="@+id/c7" />
         </LinearLayout>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -296,6 +298,7 @@
                 android:layout_weight="1"
                 android:id="@+id/d7" />
         </LinearLayout>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -454,6 +457,7 @@
                 android:layout_weight="1"
                 android:id="@+id/g7" />
         </LinearLayout>
+
     </LinearLayout>
 
     <TextView
@@ -466,4 +470,5 @@
         android:layout_alignParentBottom="true"
         android:layout_alignTop="@+id/button_challenge"
         android:textStyle="bold" />
+
 </RelativeLayout>

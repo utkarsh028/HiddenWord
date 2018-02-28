@@ -8,17 +8,17 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.meutkarsh.hiddenword.MainActivity"
-    android:background="@drawable/bc"
-    >
+    android:background="@drawable/bc">
 
     <Button
         android:id="@+id/button_start"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:background="#00ffffff"
+        android:fontFamily="monospace"
         android:maxLines="1"
         android:text="@string/start"
         android:textColor="#000000"
@@ -27,12 +27,13 @@
 
     <Button
         android:id="@+id/button_instructions"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_start"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
         android:background="#00ffffff"
+        android:fontFamily="monospace"
         android:maxLines="1"
         android:text="@string/instructions"
         android:textColor="#000000"
@@ -41,12 +42,13 @@
 
     <Button
         android:id="@+id/button_exit"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:background="#00ffffff"
+        android:fontFamily="monospace"
         android:maxLines="1"
         android:text="@string/exit"
         android:textColor="#000000"
