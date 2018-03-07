@@ -3,7 +3,7 @@ package com.meutkarsh.hiddenword;
 import java.util.HashMap;
 
 /**
- * Created by USER on 3/20/2017.
+ * Created by Utkarsh on 3/20/2017.
  */
 
 public class TrieNode {
