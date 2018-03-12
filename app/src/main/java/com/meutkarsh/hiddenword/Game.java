@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Game extends AppCompatActivity {
 
@@ -55,8 +56,7 @@ public class Game extends AppCompatActivity {
         //Toast.makeText(THIS, "One Player = " + onePlayerGame, Toast.LENGTH_SHORT).show();
         if(onePlayerGame) {
             compStrength = intent.getIntExtra("compStrength", 50);
-            Toast.makeText(THIS, "compStrength = " + compStrength, Toast.LENGTH_SHORT).show();
-            // use this computer strength for single player
+            //Toast.makeText(THIS, "compStrength = " + compStrength, Toast.LENGTH_SHORT).show();
         }
 
         mp = MediaPlayer.create(this, R.raw.abc);
@@ -82,6 +82,11 @@ public class Game extends AppCompatActivity {
         final EditText p1_name = (EditText) input_data_view.findViewById(R.id.p1_name);
         final EditText p2_name = (EditText) input_data_view.findViewById(R.id.p2_name);
         final EditText score = (EditText) input_data_view.findViewById(R.id.max_score);
+
+        if(onePlayerGame) {
+            p2_name.setHint("Enter Computer Name");
+            tvp2.setText("Computer");
+        }
 
         //adb.setCancelable(false); almost = alert.setCanceledOnTouchOutside(false);
         adb.setPositiveButton("Start",new DialogInterface.OnClickListener() {
@@ -177,11 +182,22 @@ public class Game extends AppCompatActivity {
                             tvs1.setText("" + scoreP1);
                         }
                         if (!checkEnd()) {
-                            b_challenge.setText("NEXT");
-                            b_challenge.setBackgroundColor(Color.rgb(250, 200, 50));
+                            if(onePlayerGame && (turn & 1) == 1) {
+                                String name = tvp2.getText().toString();
+                                Toast.makeText(THIS, name + " selected wrong character", Toast.LENGTH_SHORT).show();
+                                nextTurn();
+                            } else {
+                                b_challenge.setText("NEXT");
+                                b_challenge.setBackgroundColor(Color.rgb(250, 200, 50));
+                            }
                         }
                     } else {
-                        Toast.makeText(Game.this, "Good job ...", Toast.LENGTH_SHORT).show();
+                        if(!onePlayerGame || (turn & 1) == 0) {
+                            Toast.makeText(Game.this, "Good job ...", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String name = tvp2.getText().toString();
+                            Toast.makeText(THIS, name + " correctly challenged your prefix!", Toast.LENGTH_SHORT).show();
+                        }
                         if (turn % 2 == 1) {
                             scoreP2 += word.length() * plus;
                             tvs2.setText("" + scoreP2);
@@ -238,8 +254,12 @@ public class Game extends AppCompatActivity {
                             if(!checkEnd()) {
                                 if(checkContinue()) {
                                     tvword.setText(word);
-                                    b_challenge.setText("NEXT");
-                                    b_challenge.setBackgroundColor(Color.rgb(250, 200, 50));
+                                    if(onePlayerGame && (turn & 1) == 1) {
+                                        computerTurn();
+                                    } else {
+                                        b_challenge.setText("NEXT");
+                                        b_challenge.setBackgroundColor(Color.rgb(250, 200, 50));
+                                    }
                                 } else {
                                     nextTurn();
                                 }
@@ -252,10 +272,18 @@ public class Game extends AppCompatActivity {
                                 scoreP1 -= word.length() * minus;
                                 tvs1.setText("" + scoreP1);
                             }
-                            Toast.makeText(Game.this, "Invald prefix !", Toast.LENGTH_SHORT).show();
+                            if(onePlayerGame && (turn & 1) == 0) {
+                                String name = tvp2.getText().toString();
+                                Toast.makeText(THIS, name + " created invalid prefix !", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Game.this, "Invald prefix !", Toast.LENGTH_SHORT).show();
+                            }
                             if(!checkEnd()) nextTurn();
                         } else {
                             tvword.setText(word);
+                            if(onePlayerGame && (turn & 1) == 1) {
+                                computerTurn();
+                            }
                         }
                         if(turn % 2 == 0) {
                             tvturn.setText(tvp1.getText());
@@ -267,6 +295,45 @@ public class Game extends AppCompatActivity {
             }
         }
 
+    }
+
+    class pair {    // for computerTurn
+        int X, Y;
+        pair(int x, int y) {
+            X = x;
+            Y = y;
+        }
+    }
+
+    void computerTurn() {
+        ArrayList<pair> correctChoice = new ArrayList<>();
+        ArrayList<pair> wrongChoice = new ArrayList<>();
+        String word = tvword.getText().toString();
+        for(int i = 0; i < nextLEN; i++) {
+            int u = x + nextX[i];
+            int v = y + nextY[i];
+            if(inRange(u, v) && grid[u][v] == 0) {
+                if(root.isPrefix(word + b[u][v].getText())) correctChoice.add(new pair(u, v));
+                else    wrongChoice.add(new pair(u, v));
+            }
+        }
+        if((int)(Math.random() * 100) <= compStrength || word.length() < 3) {
+            if(correctChoice.isEmpty()) {
+                b_challenge.callOnClick();
+            } else {
+                int r = (int) (Math.random() * correctChoice.size());
+                pair p = correctChoice.get(r);
+                b[p.X][p.Y].callOnClick();
+            }
+        } else {
+            if(wrongChoice.isEmpty()) {
+                b_challenge.callOnClick();
+            } else {
+                int r = (int) (Math.random() * wrongChoice.size());
+                pair p = wrongChoice.get(r);
+                b[p.X][p.Y].callOnClick();
+            }
+        }
     }
 
     void initializeButtons() {
@@ -375,6 +442,14 @@ public class Game extends AppCompatActivity {
                 b[i][j].setEnabled(true);
                 grid[i][j] = 0;
             }
+        }
+        if(onePlayerGame && (turn & 1) == 1) {
+            String name = tvp2.getText().toString();
+            //Toast.makeText(THIS, name + " has started this turn.", Toast.LENGTH_SHORT).show();
+            int r = (int) (Math.random() * 49);
+            int xi = r / 7;
+            int yi = r % 7;
+            b[xi][yi].callOnClick();
         }
     }
 
