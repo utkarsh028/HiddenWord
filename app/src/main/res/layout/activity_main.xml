@@ -11,16 +11,31 @@
     android:background="@drawable/bc">
 
     <Button
-        android:id="@+id/button_start"
+        android:id="@+id/button_one_player"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/button_two_players"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginBottom="34dp"
         android:background="#00ffffff"
         android:fontFamily="monospace"
         android:maxLines="1"
-        android:text="@string/start"
+        android:text="One player"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        android:textStyle="bold|italic" />
+
+    <Button
+        android:id="@+id/button_two_players"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_instructions"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="34dp"
+        android:background="#00ffffff"
+        android:fontFamily="monospace"
+        android:maxLines="1"
+        android:text="Two Players"
         android:textColor="#000000"
         android:textSize="40sp"
         android:textStyle="bold|italic" />
@@ -29,9 +44,8 @@
         android:id="@+id/button_instructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button_start"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
+        android:layout_centerVertical="true"
         android:background="#00ffffff"
         android:fontFamily="monospace"
         android:maxLines="1"

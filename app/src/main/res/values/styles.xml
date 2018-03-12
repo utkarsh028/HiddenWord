@@ -23,7 +23,7 @@
     <style
         name="AlertDialogCustom"
         parent="@android:style/Theme.Dialog">
-        <item name="android:background">@drawable/az2</item>
+        <item name="android:background">@drawable/az_new</item>
         <item name="android:headerDividersEnabled">true</item>
         <item name="android:typeface">normal</item>
     </style>

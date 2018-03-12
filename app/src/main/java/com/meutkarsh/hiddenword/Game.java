@@ -2,6 +2,7 @@ package com.meutkarsh.hiddenword;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -41,11 +42,22 @@ public class Game extends AppCompatActivity {
     int nextX[] = new int[]{-1, -1, -1, 0, 0, 1, 1, 1};
     int nextY[] = new int[]{-1, 0, 1, -1, 1, -1, 0, 1};
     int nextLEN  = 8;
+    int compStrength;    //for single player game
+    boolean onePlayerGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        Intent intent = this.getIntent();
+        onePlayerGame = intent.getBooleanExtra("onePlayer", true);
+        //Toast.makeText(THIS, "One Player = " + onePlayerGame, Toast.LENGTH_SHORT).show();
+        if(onePlayerGame) {
+            compStrength = intent.getIntExtra("compStrength", 50);
+            Toast.makeText(THIS, "compStrength = " + compStrength, Toast.LENGTH_SHORT).show();
+            // use this computer strength for single player
+        }
 
         mp = MediaPlayer.create(this, R.raw.abc);
         mp.start();
@@ -71,10 +83,7 @@ public class Game extends AppCompatActivity {
         final EditText p2_name = (EditText) input_data_view.findViewById(R.id.p2_name);
         final EditText score = (EditText) input_data_view.findViewById(R.id.max_score);
 
-        adb.setPositiveButton("Start",null);
-        AlertDialog alert = adb.create();
-
-        adb.setCancelable(false);
+        //adb.setCancelable(false); almost = alert.setCanceledOnTouchOutside(false);
         adb.setPositiveButton("Start",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -92,22 +101,17 @@ public class Game extends AppCompatActivity {
                         new ContextThemeWrapper (Game.this, R.style.AlertDialogCustom));
                 tip.setTitle("Important Tip:");
                 tip.setMessage(message);
-                tip.setCancelable(false);
+                //tip.setCancelable(false);
 
-                tip.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Empty
-                    }
-                });
-                AlertDialog al=tip.create();
-                al.setCanceledOnTouchOutside(false);
+                //tip.setPositiveButton("OK", null);
+                AlertDialog al = tip.create();
+                //al.setCanceledOnTouchOutside(false);
                 al.show();
             }
         });
-        AlertDialog ale =adb.create();
-        ale.setCanceledOnTouchOutside(false);
-        ale.show();
+        AlertDialog alert = adb.create();
+        alert.setCanceledOnTouchOutside(false);
+        alert.show();
 
         scoreP1 = scoreP2 = 0;
         turn = 0;
