@@ -21,7 +21,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/custom_actionbar_style"/>
         <activity android:name=".Game"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

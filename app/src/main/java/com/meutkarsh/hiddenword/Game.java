@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,9 +32,11 @@ import java.util.ArrayList;
 
 public class Game extends AppCompatActivity {
 
-    TextView  tvp1, tvp2, tvs1, tvs2, tvword, tvturn;
-    Button b_restart, b_challenge;
+    TextView  tvp1, tvp2, tvs1, tvs2, tvword, tvturn,tvprev;
+    Button b_restart, b_challenge,b_inst;
+    ImageButton b_vol;
     TrieNode root;
+    String msg;
     int scoreP1, scoreP2, MIN_WORD_LENGTH = 3;
     int turn, x, y, n = 7, m = 7, grid[][];
     int endScore = 300, plus = 10, minus = 5;
@@ -70,13 +74,36 @@ public class Game extends AppCompatActivity {
         tvturn = (TextView) findViewById(R.id.tv_turn);
         b_restart = (Button) findViewById(R.id.button_restart);
         b_challenge = (Button) findViewById(R.id.button_challenge);
+        b_inst=(Button)findViewById(R.id.inst);
+        b_vol=(ImageButton)findViewById(R.id.volume);
+        tvprev=(TextView)findViewById(R.id.prev);
+        Drawable img;
+        b_inst.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Game.this,INSTRUCTIONS.class);
+                startActivity(i);
+            }
+        });
+        b_vol.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mp.isPlaying()){
+                    mp.pause();
+                    b_vol.setImageResource(R.drawable.ic_volume_off_black_24dp);
+                }else{
+                    mp.start();
+                    b_vol.setImageResource(R.drawable.ic_volume_up_black_24dp);
+                }
+            }
+        });
 
         // Dictionary Loading using Async Task
         new LoadDictionary().execute();
 
         LayoutInflater li = LayoutInflater.from(this);
         View input_data_view = li.inflate(R.layout.start_game, null);
-        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(new ContextThemeWrapper(Game.this,R.style.AlertDialogCustom));
         adb.setView(input_data_view);
 
         final EditText p1_name = (EditText) input_data_view.findViewById(R.id.p1_name);
@@ -145,6 +172,8 @@ public class Game extends AppCompatActivity {
                         if(mm.length() > 0) endScore = Integer.parseInt(mm);
                         nextTurn();
                         Toast.makeText(Game.this, "Game Restarted ...", Toast.LENGTH_SHORT).show();
+                        tvprev.setText("Game Restarted ...");
+
                         scoreP1 = scoreP2 = 0;
                         tvs1.setText("0");
                         tvs2.setText("0");
@@ -185,6 +214,7 @@ public class Game extends AppCompatActivity {
                             if(onePlayerGame && (turn & 1) == 1) {
                                 String name = tvp2.getText().toString();
                                 Toast.makeText(THIS, name + " selected wrong character", Toast.LENGTH_SHORT).show();
+                                tvprev.setText(name + " selected wrong character");
                                 nextTurn();
                             } else {
                                 b_challenge.setText("NEXT");
@@ -194,9 +224,11 @@ public class Game extends AppCompatActivity {
                     } else {
                         if(!onePlayerGame || (turn & 1) == 0) {
                             Toast.makeText(Game.this, "Good job ...", Toast.LENGTH_SHORT).show();
+                            tvprev.setText("Good job ...");
                         } else {
                             String name = tvp2.getText().toString();
                             Toast.makeText(THIS, name + " correctly challenged your prefix!", Toast.LENGTH_SHORT).show();
+                            tvprev.setText(name + " correctly challenged your prefix!");
                         }
                         if (turn % 2 == 1) {
                             scoreP2 += word.length() * plus;
@@ -251,6 +283,7 @@ public class Game extends AppCompatActivity {
                             }
                             // Add Meaning
                             Toast.makeText(Game.this, "Correct word :- " + word, Toast.LENGTH_SHORT).show();
+                            tvprev.setText("Correct word :- " + word);
                             if(!checkEnd()) {
                                 if(checkContinue()) {
                                     tvword.setText(word);
@@ -275,8 +308,10 @@ public class Game extends AppCompatActivity {
                             if(onePlayerGame && (turn & 1) == 0) {
                                 String name = tvp2.getText().toString();
                                 Toast.makeText(THIS, name + " created invalid prefix !", Toast.LENGTH_SHORT).show();
+                                tvprev.setText(name + " created invalid prefix !");
                             } else {
-                                Toast.makeText(Game.this, "Invald prefix !", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Game.this, "invalid prefix !", Toast.LENGTH_SHORT).show();
+                                tvprev.setText("invalid prefix !");
                             }
                             if(!checkEnd()) nextTurn();
                         } else {
@@ -555,6 +590,7 @@ public class Game extends AppCompatActivity {
                 }
             }catch (IOException e){
                 Toast.makeText(THIS, "Could not load Dictionary", Toast.LENGTH_LONG).show();
+                tvprev.setText("Could not load Dictionary");
             }
             return null;
         }
