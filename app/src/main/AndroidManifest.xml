@@ -19,11 +19,10 @@
         </activity>
         <activity android:name=".INSTRUCTIONS"
             android:screenOrientation="portrait"
-            android:theme="@style/custom_actionbar_style"/>
+            android:theme="@style/custom_actionbar_style" />
         <activity android:name=".Game"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

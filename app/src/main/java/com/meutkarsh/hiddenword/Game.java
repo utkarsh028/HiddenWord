@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,14 +28,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Game extends AppCompatActivity {
 
-    TextView  tvp1, tvp2, tvs1, tvs2, tvword, tvturn,tvprev;
-    Button b_restart, b_challenge,b_inst;
-    ImageButton b_vol;
+    TextView  tvp1, tvp2, tvs1, tvs2, tvword, tvturn, tvprev;
+    Button b_restart, b_challenge, b_inst;
+    ImageButton b_volume;
     TrieNode root;
-    String msg;
     int scoreP1, scoreP2, MIN_WORD_LENGTH = 3;
     int turn, x, y, n = 7, m = 7, grid[][];
     int endScore = 300, plus = 10, minus = 5;
@@ -61,9 +60,11 @@ public class Game extends AppCompatActivity {
         if(onePlayerGame) {
             compStrength = intent.getIntExtra("compStrength", 50);
             //Toast.makeText(THIS, "compStrength = " + compStrength, Toast.LENGTH_SHORT).show();
+            if(compStrength < 10)   compStrength = 10;
+            compStrength = (int)(compStrength * 0.80 + 20);
         }
 
-        mp = MediaPlayer.create(this, R.raw.abc);
+        mp = MediaPlayer.create(this, R.raw.got);
         mp.start();
 
         tvp1 = (TextView) findViewById(R.id.tv_player1);
@@ -74,26 +75,26 @@ public class Game extends AppCompatActivity {
         tvturn = (TextView) findViewById(R.id.tv_turn);
         b_restart = (Button) findViewById(R.id.button_restart);
         b_challenge = (Button) findViewById(R.id.button_challenge);
-        b_inst=(Button)findViewById(R.id.inst);
-        b_vol=(ImageButton)findViewById(R.id.volume);
-        tvprev=(TextView)findViewById(R.id.prev);
-        Drawable img;
+
+        b_inst = (Button)findViewById(R.id.inst);
+        b_volume = (ImageButton)findViewById(R.id.volume);
+        tvprev = (TextView)findViewById(R.id.prev);
         b_inst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Game.this,INSTRUCTIONS.class);
+                Intent i = new Intent(getApplicationContext() , INSTRUCTIONS.class);
                 startActivity(i);
             }
         });
-        b_vol.setOnClickListener(new View.OnClickListener() {
+        b_volume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mp.isPlaying()){
                     mp.pause();
-                    b_vol.setImageResource(R.drawable.ic_volume_off_black_24dp);
-                }else{
+                    b_volume.setImageResource(R.drawable.ic_volume_off_black_24dp);
+                } else {
                     mp.start();
-                    b_vol.setImageResource(R.drawable.ic_volume_up_black_24dp);
+                    b_volume.setImageResource(R.drawable.ic_volume_up_black_24dp);
                 }
             }
         });
@@ -150,6 +151,7 @@ public class Game extends AppCompatActivity {
         grid = new int[n][m];
         b_restart.setBackgroundColor(Color.TRANSPARENT);
         b_challenge.setBackgroundColor(Color.TRANSPARENT);
+        tvprev.setText("Good Luck!");
 
         //initializing button array
         initializeButtons();
@@ -172,7 +174,7 @@ public class Game extends AppCompatActivity {
                         if(mm.length() > 0) endScore = Integer.parseInt(mm);
                         nextTurn();
                         Toast.makeText(Game.this, "Game Restarted ...", Toast.LENGTH_SHORT).show();
-                        tvprev.setText("Game Restarted ...");
+                        tvprev.setText("Good Luck!");
 
                         scoreP1 = scoreP2 = 0;
                         tvs1.setText("0");
@@ -192,7 +194,6 @@ public class Game extends AppCompatActivity {
         b_challenge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(b_challenge.getText().toString().charAt(0) == 'N') {
                     b_challenge.setText("CHALLENGE");
                     b_challenge.setBackgroundColor(Color.TRANSPARENT);
@@ -213,8 +214,8 @@ public class Game extends AppCompatActivity {
                         if (!checkEnd()) {
                             if(onePlayerGame && (turn & 1) == 1) {
                                 String name = tvp2.getText().toString();
-                                Toast.makeText(THIS, name + " selected wrong character", Toast.LENGTH_SHORT).show();
-                                tvprev.setText(name + " selected wrong character");
+                                //Toast.makeText(THIS, name + " wrongly challenged your prefix.", Toast.LENGTH_SHORT).show();
+                                tvprev.setText(name + " wrongly challenged your prefix.");
                                 nextTurn();
                             } else {
                                 b_challenge.setText("NEXT");
@@ -227,7 +228,7 @@ public class Game extends AppCompatActivity {
                             tvprev.setText("Good job ...");
                         } else {
                             String name = tvp2.getText().toString();
-                            Toast.makeText(THIS, name + " correctly challenged your prefix!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(THIS, name + " correctly challenged your prefix!", Toast.LENGTH_SHORT).show();
                             tvprev.setText(name + " correctly challenged your prefix!");
                         }
                         if (turn % 2 == 1) {
@@ -282,8 +283,13 @@ public class Game extends AppCompatActivity {
                                 tvs1.setText("" + scoreP1);
                             }
                             // Add Meaning
-                            Toast.makeText(Game.this, "Correct word :- " + word, Toast.LENGTH_SHORT).show();
-                            tvprev.setText("Correct word :- " + word);
+                            //Toast.makeText(Game.this, "Correct word :- " + word, Toast.LENGTH_SHORT).show();
+                            if(onePlayerGame && (turn & 1) == 0) {
+                                String name = tvp2.getText().toString();
+                                tvprev.setText(name + " formed a complete word " + word + '.');
+                            } else {
+                                tvprev.setText("Correct word:- " + word + "\nGood job!");
+                            }
                             if(!checkEnd()) {
                                 if(checkContinue()) {
                                     tvword.setText(word);
@@ -307,11 +313,11 @@ public class Game extends AppCompatActivity {
                             }
                             if(onePlayerGame && (turn & 1) == 0) {
                                 String name = tvp2.getText().toString();
-                                Toast.makeText(THIS, name + " created invalid prefix !", Toast.LENGTH_SHORT).show();
-                                tvprev.setText(name + " created invalid prefix !");
+                                //Toast.makeText(THIS, name + " created invalid prefix !", Toast.LENGTH_SHORT).show();
+                                tvprev.setText(name + " created an invalid prefix " + word + " !");
                             } else {
-                                Toast.makeText(Game.this, "invalid prefix !", Toast.LENGTH_SHORT).show();
-                                tvprev.setText("invalid prefix !");
+                                //Toast.makeText(Game.this, "invalid prefix !", Toast.LENGTH_SHORT).show();
+                                tvprev.setText(word + " is an invalid prefix!");
                             }
                             if(!checkEnd()) nextTurn();
                         } else {
@@ -491,20 +497,30 @@ public class Game extends AppCompatActivity {
     boolean canContinue() {
         String word = (String) tvword.getText();
         if(word.length() == 0)  return true;
-        boolean can = false;
         b[x][y].setEnabled(false);
+        HashSet<String> completeWords = new HashSet<>();
         for(int i = 0; i < nextLEN; i++) {
             int u = x + nextX[i];
             int v = y + nextY[i];
             if(inRange(u, v)) {
                 b[u][v].setEnabled(false);
-                if(grid[u][v] == 0 && root.isPrefix(word + b[u][v].getText())) {
-                    can = true;
-                    b[u][v].setBackgroundColor(Color.rgb(100, 200, 10));
+                if(grid[u][v] == 0) {
+                    String fullWord = root.getWord(word + b[u][v].getText().toString());
+                    if( !fullWord.isEmpty() ) {
+                        b[u][v].setBackgroundColor(Color.rgb(100, 200, 10));
+                        completeWords.add(fullWord);
+                    }
                 }
             }
         }
-        return can;
+        if(completeWords.isEmpty()) return false;
+        String prev = "";
+        for(String cw : completeWords) {
+            if(prev.isEmpty()) prev += cw;
+            else prev += ", " + cw;
+        }
+        tvprev.setText("Possible words are " + prev + '.');
+        return  true;
     }
 
     boolean checkContinue() {
@@ -573,6 +589,22 @@ public class Game extends AppCompatActivity {
         mp.release();
     }
 
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder adb = new AlertDialog.Builder(THIS);
+        adb.setTitle("Sure to exit?");
+        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();   // closes current actvity
+            }
+        });
+        adb.setNegativeButton("No", null);
+        adb.setCancelable(false);
+        AlertDialog ad = adb.create();
+        ad.show();
+    }
+
     private class LoadDictionary extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -590,7 +622,7 @@ public class Game extends AppCompatActivity {
                 }
             }catch (IOException e){
                 Toast.makeText(THIS, "Could not load Dictionary", Toast.LENGTH_LONG).show();
-                tvprev.setText("Could not load Dictionary");
+                tvprev.setText("Could not load Dictionary.");
             }
             return null;
         }

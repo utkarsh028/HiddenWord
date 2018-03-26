@@ -8,25 +8,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style
-        name="custom_actionbar_style"
-        parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    <style name="custom_actionbar_style" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/custom_style</item>
     </style>
 
-    <style
-        name="custom_style"
-        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="custom_style" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@drawable/wood</item>
     </style>
 
-    <style
-        name="AlertDialogCustom"
-        parent="@android:style/Theme.Dialog">
+    <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
         <item name="android:background">@drawable/az_new</item>
         <item name="android:headerDividersEnabled">true</item>
         <item name="android:typeface">normal</item>
     </style>
+
     <style name="AlertDialog">
         <item name="android:background">@drawable/az_new</item>
     </style>

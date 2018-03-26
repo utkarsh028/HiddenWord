@@ -68,4 +68,33 @@ public class TrieNode {
         }
         temp.isWord = true;
     }
+
+    public String getWord(String s) {
+        TrieNode current = this;
+        int i, n = s.length();
+        char c;
+        for(i = 0; i < n; i++){
+            c = s.charAt(i);
+            HashMap< Character, TrieNode > child = current.getChildren();
+            if(!child.containsKey(c)){
+                return "";
+            } else {
+                current = child.get(c);
+            }
+        }
+        while(!current.isWord) {
+            HashMap< Character, TrieNode > child = current.getChildren();
+            int x = (int)(Math.random() * 26);
+            while(true) {
+                c = (char)(x + 'a');
+                if(child.containsKey(c)) {
+                    s += c;
+                    current = child.get(c);
+                    break;
+                }
+                x = (x + 1) % 26;
+            }
+        }
+        return s;
+    }
 }
