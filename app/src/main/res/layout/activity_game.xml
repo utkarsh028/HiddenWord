@@ -496,18 +496,21 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:textAlignment="center"
-        android:id="@+id/prev"
-        android:layout_below="@+id/instructions_sound"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold"
-        android:text=""/>
-
+        android:layout_below="@+id/instructions_sound">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:id="@+id/prev"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold"
+            android:text=""/>
+    </ScrollView>
 
 
 </RelativeLayout>

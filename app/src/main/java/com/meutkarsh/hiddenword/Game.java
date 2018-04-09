@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,9 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class Game extends AppCompatActivity {
@@ -49,12 +46,24 @@ public class Game extends AppCompatActivity {
     int nextLEN  = 8;
     int compStrength;    //for single player game
     boolean onePlayerGame;
-
+    HashMap<String, String> wordMeanings;
+    boolean isPlaying;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        if (savedInstanceState != null) {
+            try {
+                isPlaying = savedInstanceState.getBoolean("isPlaying");
+            } catch (Exception e) {
+                isPlaying = true;
+                Log.e("Utkarsh", "Save instant error");
+            }
+        } else {
+            isPlaying = true;
+        }
 
         Intent intent = this.getIntent();
         onePlayerGame = intent.getBooleanExtra("onePlayer", true);
@@ -94,9 +103,11 @@ public class Game extends AppCompatActivity {
             public void onClick(View view) {
                 if(mp.isPlaying()){
                     mp.pause();
+                    isPlaying = false;
                     b_volume.setImageResource(R.drawable.ic_volume_off_black_24dp);
                 } else {
                     mp.start();
+                    isPlaying = true;
                     b_volume.setImageResource(R.drawable.ic_volume_up_black_24dp);
                 }
             }
@@ -168,7 +179,7 @@ public class Game extends AppCompatActivity {
                 AlertDialog.Builder ad = new AlertDialog.Builder(
                         new ContextThemeWrapper (Game.this, R.style.AlertDialogCustom));
                 ad.setView(dialog_view);
-                ad.setCancelable(false);
+                //ad.setCancelable(false);
                 ad.setMessage("Are you sure you want to restart ?");
                 final EditText score = (EditText) dialog_view.findViewById(R.id.max_score);
                 ad.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
@@ -190,7 +201,7 @@ public class Game extends AppCompatActivity {
                         turn = 0;
                     }
                 });
-                ad.setNegativeButton("Cancel", null);
+                //ad.setNegativeButton("Cancel", null);
                 ad.show();
             }
         });
@@ -294,10 +305,16 @@ public class Game extends AppCompatActivity {
                             //Toast.makeText(Game.this, "Correct word :- " + word, Toast.LENGTH_SHORT).show();
                             if(onePlayerGame && (turn & 1) == 0) {
                                 String name = tvp2.getText().toString();
-                                tvprev.setText(name + " formed a complete word " + word + '.');
+                                String text = word;
+                                if(wordMeanings.containsKey(word))  text += "\nMeaning: " + wordMeanings.get(word);
+                                tvprev.setText(name + " formed a complete word: " + text);
                             } else {
                                 mp1.start();
-                                tvprev.setText("Correct word:- " + word + "\nGood job!");
+                                if(wordMeanings.containsKey(word)) {
+                                    tvprev.setText("Correct word: " + word + "\nMeaning: " + wordMeanings.get(word));
+                                } else {
+                                    tvprev.setText("Correct word: " + word + "\nGood job!");
+                                }
                             }
                             if(!checkEnd()) {
                                 if(checkContinue()) {
@@ -482,12 +499,14 @@ public class Game extends AppCompatActivity {
         tvword.setText("");
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < m; j++) {
-                if(i == j || (i+j) == (n-1)) {
-                    u = vowels[(int) (Math.random() * 5)];
-                } else {
-                    u = (char) ((Math.random() * 26) + 'a');
+                if(grid[i][j] == 1 || turn == 0) {
+                    if (i == j || (i + j) == (n - 1)) {
+                        u = vowels[(int) (Math.random() * 5)];
+                    } else {
+                        u = (char) ((Math.random() * 26) + 'a');
+                    }
+                    b[i][j].setText("" + u);
                 }
-                b[i][j].setText("" + u);
                 b[i][j].setBackgroundColor(Color.TRANSPARENT);
                 b[i][j].setEnabled(true);
                 grid[i][j] = 0;
@@ -557,7 +576,7 @@ public class Game extends AppCompatActivity {
         return (x >= 0 && x < n && y >= 0 && y < m);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mi = getMenuInflater();
         mi.inflate(R.menu.top_menu, menu);
@@ -576,6 +595,12 @@ public class Game extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }*/
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isPlaying", mp.isPlaying());
     }
 
     @Override
@@ -587,7 +612,7 @@ public class Game extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        mp.start();
+        if(isPlaying) mp.start();
         // will start even if icon is off -> bug
     }
 
@@ -628,6 +653,17 @@ public class Game extends AppCompatActivity {
                     String word = line.trim();
                     if (word.length() >= MIN_WORD_LENGTH)
                         root.add(word);
+                }
+
+                wordMeanings = new HashMap<>();
+                inputStream = assetManager.open("wm.txt");
+                in = new BufferedReader(new InputStreamReader(inputStream));
+                line = null;
+                while((line = in.readLine()) != null) {
+                    int z = line.indexOf(' ');
+                    if(z == -1) continue;
+                    String word = line.substring(0, z).toLowerCase();
+                    wordMeanings.put(word, line.substring(z+1));
                 }
             }catch (IOException e){
                 Toast.makeText(THIS, "Could not load Dictionary", Toast.LENGTH_LONG).show();
