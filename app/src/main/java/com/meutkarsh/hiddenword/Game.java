@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,13 +42,14 @@ public class Game extends AppCompatActivity {
     int endScore = 300, plus = 10, minus = 5;
     Button b[][] = new Button[n][m];
     char vowels[] = new char[]{'a', 'e', 'i', 'o', 'u'};
-    public MediaPlayer mp;
+    public MediaPlayer mp,mp1;
     Context THIS = this;
     int nextX[] = new int[]{-1, -1, -1, 0, 0, 1, 1, 1};
     int nextY[] = new int[]{-1, 0, 1, -1, 1, -1, 0, 1};
     int nextLEN  = 8;
     int compStrength;    //for single player game
     boolean onePlayerGame;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,8 @@ public class Game extends AppCompatActivity {
             compStrength = (int)(compStrength * 0.80 + 20);
         }
 
-        mp = MediaPlayer.create(this, R.raw.got);
+        mp = MediaPlayer.create(this, R.raw.b);
+        mp1=MediaPlayer.create(this,R.raw.clapsoundcut);
         mp.start();
 
         tvp1 = (TextView) findViewById(R.id.tv_player1);
@@ -162,7 +165,8 @@ public class Game extends AppCompatActivity {
             public void onClick(View v) {
                 LayoutInflater li = LayoutInflater.from(THIS);
                 View dialog_view = li.inflate(R.layout.restart, null);
-                AlertDialog.Builder ad = new AlertDialog.Builder(THIS);
+                AlertDialog.Builder ad = new AlertDialog.Builder(
+                        new ContextThemeWrapper (Game.this, R.style.AlertDialogCustom));
                 ad.setView(dialog_view);
                 ad.setCancelable(false);
                 ad.setMessage("Are you sure you want to restart ?");
@@ -224,8 +228,12 @@ public class Game extends AppCompatActivity {
                         }
                     } else {
                         if(!onePlayerGame || (turn & 1) == 0) {
+
+                            mp1.start();
+
                             Toast.makeText(Game.this, "Good job ...", Toast.LENGTH_SHORT).show();
                             tvprev.setText("Good job ...");
+
                         } else {
                             String name = tvp2.getText().toString();
                             //Toast.makeText(THIS, name + " correctly challenged your prefix!", Toast.LENGTH_SHORT).show();
@@ -288,6 +296,7 @@ public class Game extends AppCompatActivity {
                                 String name = tvp2.getText().toString();
                                 tvprev.setText(name + " formed a complete word " + word + '.');
                             } else {
+                                mp1.start();
                                 tvprev.setText("Correct word:- " + word + "\nGood job!");
                             }
                             if(!checkEnd()) {
