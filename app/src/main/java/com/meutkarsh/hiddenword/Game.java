@@ -76,6 +76,7 @@ public class Game extends AppCompatActivity {
         }
 
         mp = MediaPlayer.create(this, R.raw.b);
+        mp.setLooping(true);
         mp1=MediaPlayer.create(this,R.raw.clapsoundcut);
         mp.start();
 
@@ -103,6 +104,7 @@ public class Game extends AppCompatActivity {
             public void onClick(View view) {
                 if(mp.isPlaying()){
                     mp.pause();
+                    mp1.pause();
                     isPlaying = false;
                     b_volume.setImageResource(R.drawable.ic_volume_off_black_24dp);
                 } else {
@@ -239,7 +241,7 @@ public class Game extends AppCompatActivity {
                         }
                     } else {
                         if(!onePlayerGame || (turn & 1) == 0) {
-
+                            if(mp.isPlaying())
                             mp1.start();
 
                             Toast.makeText(Game.this, "Good job ...", Toast.LENGTH_SHORT).show();
@@ -309,6 +311,7 @@ public class Game extends AppCompatActivity {
                                 if(wordMeanings.containsKey(word))  text += "\nMeaning: " + wordMeanings.get(word);
                                 tvprev.setText(name + " formed a complete word: " + text);
                             } else {
+                                if(mp.isPlaying())
                                 mp1.start();
                                 if(wordMeanings.containsKey(word)) {
                                     tvprev.setText("Correct word: " + word + "\nMeaning: " + wordMeanings.get(word));
@@ -621,6 +624,8 @@ public class Game extends AppCompatActivity {
         super.onDestroy();
         mp.stop();
         mp.release();
+        mp1.stop();
+        mp1.release();
     }
 
     @Override
